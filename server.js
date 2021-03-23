@@ -9,6 +9,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(express.static(path.join(__dirname , "public")))
+app.use(express.urlencoded())
 
 //setup template engine
 app.set("views" , path.join(__dirname , "view"))
@@ -21,20 +22,84 @@ app.engine("handlebars" , hbs({
 
 //routing
 app.get("/" , (req, res)=>{
-    res.render("index")
+    res.render("index", {
+        title : "Home Page",
+    })
 })
 
 app.get("/about" , (req, res)=>{
-    res.render('about')
+    res.render('about' , {
+        title : "About Page"
+    })
 })
 
 app.get("/contact" , (req, res)=>{
-    res.render('contact')
+    res.render('contact' , {
+        title : "Contact Page"
+    })
 })
 
 app.get("/gallery" , (req, res)=>{
-    res.render('gallery')
+    res.render('gallery' , {
+        title : "Gallery Page"
+    })
 })
+
+app.get("/send", (req,res)=>{
+
+    //kita tangkap data dari query
+    const nm = req.query.name
+    const ph = req.query.phone
+    const em = req.query.email
+    const msg = req.query.message
+
+    console.log(`
+    name : ${nm}
+    phone : ${ph}
+    email : ${em}
+    message : ${msg}
+    `)
+
+    res.render("contact", {
+        name : nm,
+        phone : ph,
+        email : em,
+        message : msg
+    })
+
+})
+
+app.post("/message" , (req,res)=>{
+
+    //kita tangkap req body
+    const nm = req.body.name
+    const ph = req.body.phone
+    const em = req.body.email
+    const msg = req.body.message
+
+    console.log(`
+    --------------------------
+    REQUEST BODY
+    --------------------------
+    name : ${nm}
+    phone : ${ph}
+    email : ${em}
+    message : ${msg}
+    `)
+
+    res.render("contact", {
+        name : nm,
+        phone : ph,
+        email : em,
+        message : msg
+    })
+})
+
+
+
+
+
+
 
 //REQUEST PARAMS
 app.get("/about/:username/:address" , (req, res)=>{
@@ -60,10 +125,6 @@ app.get("/contact/detail/" , (req , res)=>{
     `)
 
 })
-
-
-
-
 
 
 
